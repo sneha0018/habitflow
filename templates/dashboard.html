@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>HabitFlow Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <style>
       body {
@@ -129,15 +130,59 @@
           style="
             display: none;
             position: absolute;
+            right: 10px;
+            top: 40px;
             background: #020617;
-            padding: 10px;
             border: 1px solid #334155;
+            border-radius: 8px;
+            min-width: 150px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
           "
         >
-          <p><a href="/dashboard">Board</a></p>
-          <p><a href="/analytics">Analytics</a></p>
-          <p><a href="/settings">Settings</a></p>
-          <p><a href="/logout">Logout</a></p>
+          <a
+            href="/dashboard"
+            style="
+              display: block;
+              padding: 10px;
+              color: #e2e8f0;
+              text-decoration: none;
+            "
+            >Board</a
+          >
+
+          <a
+            href="/analytics"
+            style="
+              display: block;
+              padding: 10px;
+              color: #e2e8f0;
+              text-decoration: none;
+            "
+            >Analytics</a
+          >
+
+          <a
+            href="/settings"
+            style="
+              display: block;
+              padding: 10px;
+              color: #e2e8f0;
+              text-decoration: none;
+            "
+            >Settings</a
+          >
+
+          <a
+            href="/logout"
+            style="
+              display: block;
+              padding: 10px;
+              color: #ef4444;
+              text-decoration: none;
+            "
+            >Logout</a
+          >
         </div>
       </div>
     </div>
