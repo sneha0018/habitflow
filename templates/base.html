@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+  <head>
+    <title>HabitFlow</title>
+
+    <style>
+      body {
+        background: #0f172a;
+        color: #f1f5f9;
+        font-family:
+          Segoe UI,
+          Arial,
+          sans-serif;
+        margin: 0;
+      }
+
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 40px;
+        background: #020617;
+        border-bottom: 1px solid #334155;
+      }
+
+      .logo {
+        font-size: 22px;
+        font-weight: bold;
+        color: #38bdf8;
+      }
+
+      .navbar a {
+        color: #f1f5f9;
+        text-decoration: none;
+        margin-left: 20px;
+        font-size: 14px;
+      }
+
+      .container {
+        width: 90%;
+        margin: auto;
+        padding: 30px;
+      }
+
+      .card {
+        background: #1e293b;
+        padding: 25px;
+        border-radius: 10px;
+        max-width: 500px;
+        margin: auto;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        padding: 10px;
+        margin-top: 6px;
+        margin-bottom: 15px;
+        border-radius: 6px;
+        border: none;
+        background: #334155;
+        color: white;
+      }
+
+      button {
+        background: #22c55e;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      button:hover {
+        background: #16a34a;
+      }
+
+      .page-title {
+        text-align: center;
+        margin-bottom: 25px;
+        font-size: 22px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="navbar">
+      <div class="logo">HabitFlow</div>
+
+      <div>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/analytics">Analytics</a>
+        <a href="/logout">Logout</a>
+      </div>
+    </div>
+
+    <div class="container">{% block content %} {% endblock %}</div>
+  </body>
+</html>

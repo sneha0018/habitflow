@@ -1,0 +1,269 @@
+<!doctype html>
+<html>
+  <head>
+    <title>HabitFlow Dashboard</title>
+
+    <style>
+      body {
+        background: #0f172a;
+        color: #f1f5f9;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        background: #020617;
+        border-bottom: 1px solid #334155;
+      }
+
+      .navbar a {
+        color: #38bdf8;
+        text-decoration: none;
+        margin-left: 20px;
+      }
+
+      .container {
+        display: flex;
+        padding: 20px;
+      }
+
+      .sidebar {
+        width: 20%;
+        padding: 20px;
+        background: #020617;
+        border-right: 1px solid #334155;
+      }
+
+      .sidebar ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .sidebar li {
+        padding: 5px 0;
+      }
+
+      .main {
+        width: 80%;
+        padding: 20px;
+      }
+
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      th {
+        background: #1e293b;
+        padding: 6px;
+        font-size: 14px;
+      }
+
+      td {
+        padding: 4px;
+        text-align: center;
+      }
+
+      .habit-name {
+        text-align: left;
+        padding-left: 10px;
+      }
+
+      .square {
+        width: 18px;
+        height: 18px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: auto;
+      }
+
+      .done {
+        background: #22c55e;
+      }
+
+      .not-done {
+        background: #334155;
+      }
+
+      .stats {
+        min-width: 160px;
+        text-align: left;
+        padding-left: 10px;
+      }
+
+      button {
+        background: #38bdf8;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      a.icon {
+        margin-left: 6px;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- NAVBAR -->
+
+    <div class="navbar">
+      <h2>HabitFlow</h2>
+
+      <div>
+        <a href="/analytics">Analytics</a>
+
+        <span onclick="toggleMenu()" style="cursor: pointer; margin-left: 20px">
+          Profile ▼
+        </span>
+
+        <div
+          id="profileMenu"
+          style="
+            display: none;
+            position: absolute;
+            background: #020617;
+            padding: 10px;
+            border: 1px solid #334155;
+          "
+        >
+          <p><a href="/dashboard">Board</a></p>
+          <p><a href="/analytics">Analytics</a></p>
+          <p><a href="/settings">Settings</a></p>
+          <p><a href="/logout">Logout</a></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- MONTH NAVIGATION -->
+
+    <div style="padding: 20px">
+      <a href="/dashboard?year={{prev_year}}&month={{prev_month}}">⬅</a>
+
+      <strong style="margin: 0 15px">{{ month }}/{{ year }}</strong>
+
+      <a href="/dashboard?year={{next_year}}&month={{next_month}}">➡</a>
+    </div>
+
+    <div
+      style="
+        background: #1e293b;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        font-weight: bold;
+        color: #22c55e;
+        text-align: center;
+      "
+    >
+      {{ motivation }}
+    </div>
+
+    <div class="container">
+      <!-- SIDEBAR -->
+
+      <div class="sidebar">
+        <h3>Habits</h3>
+
+        <ul>
+          {% for item in habit_data %}
+          <li>{{ item.habit.habit_name }}</li>
+          {% endfor %}
+        </ul>
+
+        <br />
+
+        <a href="/add-habit">+ New Habit</a>
+      </div>
+
+      <!-- MAIN GRID -->
+
+      <div class="main">
+        <table>
+          <tr>
+            <th class="habit-name">Habit</th>
+
+            {% for day in days %}
+            <th>{{ day }}</th>
+            {% endfor %}
+
+            <th>Stats</th>
+          </tr>
+
+          {% for item in habit_data %}
+
+          <tr>
+            <td class="habit-name">{{ item.habit.habit_name }}</td>
+
+            {% for done in item.history %}
+
+            <td>
+              <div
+                onclick="toggleHabit({{ item.habit.id }}, {{ days[loop.index0] }}, this)"
+                class="square {% if done %}done{% else %}not-done{% endif %}"
+              ></div>
+            </td>
+
+            {% endfor %}
+
+            <td class="stats">
+              🔥 {{ item.streak }}
+
+              <span style="color: #38bdf8; margin-left: 8px">
+                {{ item.progress }}%
+              </span>
+
+              <a class="icon" href="/edit-habit/{{ item.habit.id }}">✏</a>
+
+              <a class="icon" href="/delete-habit/{{ item.habit.id }}">🗑</a>
+
+              <a
+                class="icon"
+                href="/add-note/{{ item.habit.id }}/{{ days[loop.index0] }}"
+                >📝</a
+              >
+            </td>
+          </tr>
+
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+
+    <script>
+      function toggleMenu() {
+        let menu = document.getElementById("profileMenu");
+
+        if (menu.style.display === "none") {
+          menu.style.display = "block";
+        } else {
+          menu.style.display = "none";
+        }
+      }
+    </script>
+
+    <script>
+      function toggleHabit(habitId, day, element) {
+        fetch(`/toggle-habit/${habitId}/${day}`)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "done") {
+              element.classList.remove("not-done");
+              element.classList.add("done");
+            } else {
+              element.classList.remove("done");
+              element.classList.add("not-done");
+            }
+          });
+      }
+    </script>
+  </body>
+</html>

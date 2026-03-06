@@ -1,0 +1,13 @@
+{% extends "base.html" %} {% block content %}
+<h2>Edit Habit</h2>
+
+<form method="POST">
+  <label>Habit Name:</label>
+
+  <input type="text" name="habit_name" value="{{ habit.habit_name }}" />
+
+  <br /><br />
+
+  <button type="submit">Save</button>
+</form>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "base.html" %} {% block content %}
+<!doctype html>
+<html>
+  <head>
+    <title>HabitFlow Analytics</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+
+  <h1>HabitFlow Analytics</h1>
+
+  <h3>Total Habits: {{ total_habits }}</h3>
+
+  <h3>Total Completions: {{ completions }}</h3>
+
+  <canvas id="habitChart" width="400" height="200"></canvas>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+
+    const ctx = document.getElementById('habitChart');
+
+    new Chart(ctx, {
+
+    type: 'bar',
+
+    data: {
+
+    labels: {{ habit_names | tojson }},
+
+    datasets: [{
+    label: 'Habit Completion Count',
+    data: {{ habit_counts | tojson }},
+    backgroundColor: 'rgba(46,204,113,0.6)'
+    }]
+
+    }
+
+    });
+  </script>
+
+  <body>
+    <h1>HabitFlow Analytics</h1>
+
+    <p>Total Habits: {{ total_habits }}</p>
+
+    <p>Total Completions: {{ completions }}</p>
+
+    <canvas id="habitChart" width="400" height="200"></canvas>
+
+    <a href="/dashboard">Back to Dashboard</a>
+
+    <script>
+
+      const ctx = document.getElementById('habitChart');
+
+      new Chart(ctx, {
+
+      type: 'bar',
+
+      data: {
+
+      labels: {{ habit_names | tojson }},
+
+      datasets: [{
+
+      label: 'Habit Completions',
+
+      data: {{ habit_counts | tojson }},
+
+      borderWidth: 1
+
+      }]
+
+      },
+
+      options: {
+
+      scales: {
+
+      y: {
+
+      beginAtZero: true
+
+      }
+
+      }
+
+      }
+
+      });
+    </script>
+  </body>
+</html>
+{% endblock %}

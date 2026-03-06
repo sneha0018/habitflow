@@ -1,0 +1,18 @@
+{% extends "base.html" %} {% block content %}
+<!doctype html>
+<html>
+  <head>
+    <title>Add Habit</title>
+  </head>
+  <body>
+    <h1>Add a New Habit</h1>
+
+    <form method="POST">
+      <label>Habit Name:</label><br />
+      <input type="text" name="habit_name" /><br /><br />
+
+      <button type="submit">Add Habit</button>
+    </form>
+  </body>
+</html>
+{% endblock %}
