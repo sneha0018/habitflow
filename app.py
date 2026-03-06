@@ -216,13 +216,6 @@ def dashboard():
                 date=habit_date
             ).first()
 
-            ####completed_count = HabitCompletion.query.filter(
-                #HabitCompletion.habit_id == habit.id,
-                #db.extract('month', HabitCompletion.date) == month,
-                #db.extract('year', HabitCompletion.date) == year
-           # ).count()#####
-
-            #progress = int((completed_count / days_in_month) * 100)
 
             history.append(True if record else False)
 

@@ -2,22 +2,24 @@
 <html>
   <head>
     <title>HabitFlow Dashboard</title>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <style>
       body {
         background: #0f172a;
         color: #f1f5f9;
-        font-family: Arial, sans-serif;
+        font-family: Arial;
         margin: 0;
-        padding: 0;
       }
+
+      /* NAVBAR */
 
       .navbar {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 15px 40px;
+        padding: 15px 20px;
         background: #020617;
         border-bottom: 1px solid #334155;
       }
@@ -25,18 +27,22 @@
       .navbar a {
         color: #38bdf8;
         text-decoration: none;
-        margin-left: 20px;
+        margin-left: 15px;
       }
+
+      /* CONTAINER */
 
       .container {
         display: flex;
-        padding: 20px;
+        flex-wrap: wrap;
       }
 
+      /* SIDEBAR */
+
       .sidebar {
-        width: 20%;
-        padding: 20px;
+        flex: 1 1 200px;
         background: #020617;
+        padding: 20px;
         border-right: 1px solid #334155;
       }
 
@@ -49,14 +55,25 @@
         padding: 5px 0;
       }
 
+      /* MAIN AREA */
+
       .main {
-        width: 80%;
+        flex: 3 1 600px;
         padding: 20px;
       }
+
+      /* TABLE WRAPPER FOR MOBILE SCROLL */
+
+      .table-container {
+        overflow-x: auto;
+      }
+
+      /* TABLE */
 
       table {
         border-collapse: collapse;
         width: 100%;
+        min-width: 900px;
       }
 
       th {
@@ -75,9 +92,11 @@
         padding-left: 10px;
       }
 
+      /* SQUARES */
+
       .square {
-        width: 18px;
-        height: 18px;
+        width: 16px;
+        height: 16px;
         border-radius: 4px;
         cursor: pointer;
         margin: auto;
@@ -91,23 +110,48 @@
         background: #334155;
       }
 
+      /* STATS */
+
       .stats {
-        min-width: 160px;
+        min-width: 140px;
         text-align: left;
         padding-left: 10px;
       }
 
-      button {
-        background: #38bdf8;
-        border: none;
-        padding: 6px 12px;
-        border-radius: 6px;
-        cursor: pointer;
+      /* MOTIVATION */
+
+      .motivation {
+        background: #1e293b;
+        padding: 15px;
+        border-radius: 10px;
+        margin: 20px;
+        font-weight: bold;
+        color: #22c55e;
+        text-align: center;
       }
 
-      a.icon {
-        margin-left: 6px;
-        text-decoration: none;
+      /* MOBILE */
+
+      @media (max-width: 768px) {
+        .navbar {
+          padding: 12px;
+        }
+
+        .sidebar {
+          flex: 1 1 100%;
+          border-right: none;
+          border-bottom: 1px solid #334155;
+        }
+
+        .main {
+          flex: 1 1 100%;
+          padding: 10px;
+        }
+
+        .square {
+          width: 14px;
+          height: 14px;
+        }
       }
     </style>
   </head>
@@ -121,9 +165,9 @@
       <div>
         <a href="/analytics">Analytics</a>
 
-        <span onclick="toggleMenu()" style="cursor: pointer; margin-left: 20px">
-          Profile ▼
-        </span>
+        <span onclick="toggleMenu()" style="cursor: pointer; margin-left: 15px"
+          >Profile ▼</span
+        >
 
         <div
           id="profileMenu"
@@ -131,13 +175,11 @@
             display: none;
             position: absolute;
             right: 10px;
-            top: 40px;
+            top: 50px;
             background: #020617;
             border: 1px solid #334155;
             border-radius: 8px;
             min-width: 150px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            overflow: hidden;
           "
         >
           <a
@@ -197,20 +239,9 @@
       <a href="/dashboard?year={{next_year}}&month={{next_month}}">➡</a>
     </div>
 
-    <div
-      style="
-        background: #1e293b;
-        padding: 15px;
-        border-radius: 10px;
-        margin-top: 20px;
-        margin-bottom: 20px;
-        font-weight: bold;
-        color: #22c55e;
-        text-align: center;
-      "
-    >
-      {{ motivation }}
-    </div>
+    <!-- MOTIVATION -->
+
+    <div class="motivation">{{ motivation }}</div>
 
     <div class="container">
       <!-- SIDEBAR -->
@@ -232,54 +263,56 @@
       <!-- MAIN GRID -->
 
       <div class="main">
-        <table>
-          <tr>
-            <th class="habit-name">Habit</th>
+        <div class="table-container">
+          <table>
+            <tr>
+              <th class="habit-name">Habit</th>
 
-            {% for day in days %}
-            <th>{{ day }}</th>
+              {% for day in days %}
+              <th>{{ day }}</th>
+              {% endfor %}
+
+              <th>Stats</th>
+            </tr>
+
+            {% for item in habit_data %}
+
+            <tr>
+              <td class="habit-name">{{ item.habit.habit_name }}</td>
+
+              {% for done in item.history %}
+
+              <td>
+                <div
+                  onclick="toggleHabit({{ item.habit.id }}, {{ days[loop.index0] }}, this)"
+                  class="square {% if done %}done{% else %}not-done{% endif %}"
+                ></div>
+              </td>
+
+              {% endfor %}
+
+              <td class="stats">
+                🔥 {{ item.streak }}
+
+                <span style="color: #38bdf8; margin-left: 6px">
+                  {{ item.progress }}%
+                </span>
+
+                <a
+                  href="/edit-habit/{{ item.habit.id }}"
+                  style="margin-left: 6px"
+                  >✏</a
+                >
+
+                <a href="/delete-habit/{{ item.habit.id }}">🗑</a>
+
+                <a href="/add-note/{{ item.habit.id }}">📝</a>
+              </td>
+            </tr>
+
             {% endfor %}
-
-            <th>Stats</th>
-          </tr>
-
-          {% for item in habit_data %}
-
-          <tr>
-            <td class="habit-name">{{ item.habit.habit_name }}</td>
-
-            {% for done in item.history %}
-
-            <td>
-              <div
-                onclick="toggleHabit({{ item.habit.id }}, {{ days[loop.index0] }}, this)"
-                class="square {% if done %}done{% else %}not-done{% endif %}"
-              ></div>
-            </td>
-
-            {% endfor %}
-
-            <td class="stats">
-              🔥 {{ item.streak }}
-
-              <span style="color: #38bdf8; margin-left: 8px">
-                {{ item.progress }}%
-              </span>
-
-              <a class="icon" href="/edit-habit/{{ item.habit.id }}">✏</a>
-
-              <a class="icon" href="/delete-habit/{{ item.habit.id }}">🗑</a>
-
-              <a
-                class="icon"
-                href="/add-note/{{ item.habit.id }}/{{ days[loop.index0] }}"
-                >📝</a
-              >
-            </td>
-          </tr>
-
-          {% endfor %}
-        </table>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -287,11 +320,7 @@
       function toggleMenu() {
         let menu = document.getElementById("profileMenu");
 
-        if (menu.style.display === "none") {
-          menu.style.display = "block";
-        } else {
-          menu.style.display = "none";
-        }
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
       }
     </script>
 
